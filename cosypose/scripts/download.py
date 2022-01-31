@@ -82,6 +82,8 @@ def main():
         elif args.bop_src == 'gdrive':
             download_bop_gdrive(args.bop_dataset)
 
+    print('LOCAL_DATA_DIR = ', LOCAL_DATA_DIR)
+
     if args.bop_extra_files:
         if args.bop_extra_files == 'tless':
             # https://github.com/kirumang/Pix2Pose#download-pre-trained-weights
@@ -151,7 +153,10 @@ def main():
 
 def run_rclone(cmd, args, flags):
     rclone_cmd = ['rclone', cmd] + args + flags + ['--config', str(RCLONE_CFG_PATH)]
+    print('RCLONE_CFG_PATH = ', RCLONE_CFG_PATH)
+    rclone_query = ' '.join(rclone_cmd)
     logger.debug(' '.join(rclone_cmd))
+    print('rclone_query = ', rclone_query)
     subprocess.run(rclone_cmd)
 
 
