@@ -1,5 +1,6 @@
 import argparse
 from colorama import Fore, Style
+from pprint import pprint
 
 from cosypose.config import LOCAL_DATA_DIR
 from cosypose.recording.record_dataset import record_dataset
@@ -78,6 +79,7 @@ def make_cfg(cfg_name,
     else:
         cfg.resume = ''
         cfg.ds_dir = datasets_dir / cfg.ds_name
+
     return cfg
 
 

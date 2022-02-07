@@ -15,10 +15,14 @@ import dask
 dask.config.set({'distributed.scheduler.allowed-failures': 1000})
 
 
-def record_dataset_dask(client, ds_dir,
-                        scene_cls, scene_kwargs,
-                        n_chunks, n_frames_per_chunk,
-                        start_seed=0, resume=False):
+def record_dataset_dask(client,            # client for data-generation
+                        ds_dir,            # dataset directory
+                        scene_cls,         # classes of objects in scene
+                        scene_kwargs,      # some arguments for scene-generation
+                        n_chunks,          
+                        n_frames_per_chunk,
+                        start_seed=0, 
+                        resume=False):
 
     seeds = set(range(start_seed, start_seed + n_chunks))
     if resume:
@@ -66,19 +70,22 @@ def record_dataset_dask(client, ds_dir,
 
 def record_dataset(args):
     if args.resume and not args.overwrite:
+        # load the config when resuming with the data generation
         resume_args = yaml.load((Path(args.resume) / 'config.yaml').read_text())
         vars(args).update({k: v for k, v in vars(resume_args).items() if 'resume' not in k})
 
+    # dataset directory
     args.ds_dir = Path(args.ds_dir)
     if args.ds_dir.is_dir():
-        if args.resume:
+        if args.resume: # resume the data generation
             assert (args.ds_dir / 'seeds_recorded.txt').exists()
-        elif args.overwrite:
+        elif args.overwrite: # restart data generation from scratch
             shutil.rmtree(args.ds_dir)
         else:
             raise ValueError('There is already a dataset with this name')
     args.ds_dir.mkdir(exist_ok=True)
 
+    # write config to file
     (args.ds_dir / 'config.yaml').write_text(yaml.dump(args))
 
     log_dir = DASK_LOGS_DIR.as_posix()
