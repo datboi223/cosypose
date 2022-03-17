@@ -23,7 +23,8 @@ from cosypose.evaluation.eval_runner.detection_eval import DetectionEvaluation
 from cosypose.utils.distributed import get_tmp_dir, get_rank
 from cosypose.utils.distributed import init_distributed_mode
 
-from cosypose.config import EXP_DIR
+from cosypose.config import EXP_DIR, RESULTS_DIR
+
 from cosypose.utils.logging import get_logger
 
 import torch.multiprocessing
@@ -36,7 +37,9 @@ logger = get_logger(__name__)
 
 def load_detector(run_id):
     run_dir = EXP_DIR / run_id
-    cfg = yaml.load((run_dir / 'config.yaml').read_text(), Loader=yaml.FullLoader)
+    config = (run_dir / 'config.yaml').read_text()
+    # cfg = yaml.load(config, Loader=yaml.FullLoader)
+    cfg = yaml.load(config, Loader=yaml.UnsafeLoader)
     cfg = check_update_config(cfg)
     label_to_category_id = cfg.label_to_category_id
     model = create_model_detector(cfg, len(label_to_category_id))
@@ -191,14 +194,21 @@ def main():
     if args.debug:
         cfg.n_frames = 10
 
-    if args.config == 'bop':
-        # ds_names = ['ycbv.bop19', 'tless.bop19']
-        ds_names = ['itodd.val', 'hb.val']
-    else:
-        raise ValueError
+
+    if args.config == 'icbin':
+        ds_names = ['icbin.bop19']
+
+    # if args.config == 'bop':
+    #     # ds_names = ['ycbv.bop19', 'tless.bop19']
+    #     # ds_names = ['itodd.val', 'hb.val']
+    #     # ds_names = ['ycbv.bop19', 'tless.bop19', 'icbin.bop19'] # 'icbin' added
+    #     ds_names = ['ycbv.bop19', 'tless.bop19', 'icbin.bop19'] # 'icbin' added
+    # else:
+    #     raise ValueError
 
     detector_run_ids = {
         'ycbv.bop19': 'ycbv--377940',
+        'icbin.bop19': 'detector-bop-icbin-pbr--127953', # 'icbin' added
         'hb.val': 'detector-bop-hb--497808',
         'itodd.val': 'detector-bop-itodd--509908',
     }

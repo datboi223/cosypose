@@ -43,7 +43,7 @@ if __name__ == '__main__':
 
     cfg.input_resize = (480, 640)
     cfg.rgb_augmentation = True
-    cfg.background_augmentation = True
+    cfg.background_augmentation = False # True
     cfg.gray_augmentation = False
 
     # Model
@@ -55,7 +55,7 @@ if __name__ == '__main__':
     cfg.pretrain_coco = True
 
     # Training
-    cfg.batch_size = 2
+    cfg.batch_size = 6
     cfg.epoch_size = 5000
     cfg.n_epochs = 600
     cfg.lr_epoch_decay = 200
@@ -123,5 +123,10 @@ if __name__ == '__main__':
 
     N_GPUS = int(os.environ.get('N_PROCS', 1))
     cfg.epoch_size = cfg.epoch_size // N_GPUS
+
+    # print(cfg)
+    cfg_dict = vars(cfg)
+    for k, v in cfg_dict.items():
+        print(k, ' -> ', v)
 
     train_detector(cfg)

@@ -110,12 +110,16 @@ def train_detector(args):
 
     if args.resume_run_id:
         resume_dir = EXP_DIR / args.resume_run_id
-        resume_args = yaml.load((resume_dir / 'config.yaml').read_text())
+        resume_args = yaml.load((resume_dir / 'config.yaml').read_text(), Loader=yaml.UnsafeLoader)
         keep_fields = set(['resume_run_id', 'epoch_size', ])
         vars(args).update({k: v for k, v in vars(resume_args).items() if k not in keep_fields})
 
     args = check_update_config(args)
     args.save_dir = EXP_DIR / args.run_id
+
+    # for k, v in vars(args).items():
+    #     print(k, ' -> ', v)
+
 
     logger.info(f"{'-'*80}")
     for k, v in args.__dict__.items():

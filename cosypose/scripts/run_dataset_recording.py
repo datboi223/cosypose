@@ -58,6 +58,13 @@ def make_cfg(cfg_name,
             textures_on_objects=True,
             camera_distance_interval=(0.65, 0.94),
         )
+    elif cfg_name == 'icbin':
+        cfg.scene_kwargs.update(
+            urdf_ds='icbin',
+            resolution=(640, 480), 
+            textures_on_objects=False,
+            camera_distance_interval=(0.5, 1.5),
+        )
 
     elif resume_ds_name:
         pass
@@ -79,6 +86,12 @@ def make_cfg(cfg_name,
     else:
         cfg.resume = ''
         cfg.ds_dir = datasets_dir / cfg.ds_name
+
+    # print('cfg: \n', type(cfg), cfg); 
+    # cfg_dict = vars(cfg)
+    # for x in cfg_dict:
+        # print(x, ' - ', cfg_dict[x])
+    # exit()
 
     return cfg
 
