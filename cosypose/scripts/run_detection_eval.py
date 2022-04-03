@@ -189,25 +189,29 @@ def main():
     cfg.n_frames = None
     cfg.skip_evaluation = False
     cfg.skip_model_predictions = args.skip_predictions
-    cfg.external_predictions = True
+    cfg.external_predictions = False # True
     cfg.detector = None
     if args.debug:
         cfg.n_frames = 10
 
 
-    if args.config == 'icbin':
-        ds_names = ['icbin.bop19']
+    # if args.config == 'icbin':
+    #     ds_names = ['icbin.bop19']
 
     # if args.config == 'bop':
-    #     # ds_names = ['ycbv.bop19', 'tless.bop19']
-    #     # ds_names = ['itodd.val', 'hb.val']
-    #     # ds_names = ['ycbv.bop19', 'tless.bop19', 'icbin.bop19'] # 'icbin' added
-    #     ds_names = ['ycbv.bop19', 'tless.bop19', 'icbin.bop19'] # 'icbin' added
-    # else:
-    #     raise ValueError
+    if 'bop' in args.config:
+        # ds_names = ['ycbv.bop19', 'tless.bop19']
+        # ds_names = ['itodd.val', 'hb.val']
+        # ds_names = ['ycbv.bop19', 'tless.bop19', 'icbin.bop19'] # 'icbin' added
+        # ds_names = ['ycbv.bop19', 'tless.bop19', 'icbin.bop19'] # 'icbin' added
+        ds_names = ['ycbv.bop19']
+    else:
+        raise ValueError
 
     detector_run_ids = {
-        'ycbv.bop19': 'ycbv--377940',
+        # 'ycbv.bop19': 'ycbv--377940',
+        # 'ycbv.bop19': 'detector-bop-ycbv-pbr--970850',
+        'ycbv.bop19': 'detector-bop-ycbv-synt+real--292971',
         'icbin.bop19': 'detector-bop-icbin-pbr--127953', # 'icbin' added
         'hb.val': 'detector-bop-hb--497808',
         'itodd.val': 'detector-bop-itodd--509908',

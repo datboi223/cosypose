@@ -1,3 +1,4 @@
+import os
 import numpy as np
 from sklearn.metrics import average_precision_score
 import xarray as xr
@@ -78,8 +79,11 @@ class DetectionMeter(Meter):
                                            group_keys=group_keys, top_key='score',
                                            targets=targets, n_top=self.n_top)
             pred_data_filtered = pred_data.clone()[ids_top_n_pred]
+            print('\nconsider_all_predictions = ', self.consider_all_predictions, ' -> n_top = ', self.n_top)
+
         else:
             pred_data_filtered = pred_data.clone()
+            print('\nconsider_all_predictions = ', self.consider_all_predictions, ' -> n_top = ', self.n_top)
 
         # Compute valid targets according to BOP evaluation.
         gt_data.infos = add_valid_gt(gt_data.infos,
@@ -176,8 +180,15 @@ class DetectionMeter(Meter):
             return ap, label_df
 
         df = pred_df[['label', valid_k, 'score']].to_dataframe().set_index(['label'])
+
+        # debug output
+        # df.to_csv(os.environ['HOME'] + '/Desktop/eval_df.csv')
+
         for label, label_n_gt in n_gts.items():
-            if df.index.contains(label):
+            # Index.contains is deprecated
+            # Use 'key in index' instead of 'index.contains(key)'
+            # if df.index.contains(label):
+            if label in df.index:
                 label_df = df.loc[[label]]
                 if label_df[valid_k].sum() > 0:
                     ap, label_df = compute_ap(label_df, label_n_gt)
@@ -189,6 +200,7 @@ class DetectionMeter(Meter):
         else:
             AP, mAP = 0., 0.
         n_gt_valid = int(sum(list(n_gts.values())))
+
 
         summary = {
             'n_gt': len(gt_df['gt_id']),

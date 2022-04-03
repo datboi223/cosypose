@@ -90,6 +90,10 @@ class BOPDataset:
         scene_dir = self.base_dir / scene_id_str
 
         rgb_dir = scene_dir / 'rgb'
+
+        if not rgb_dir.exists():
+            print('rgb_dir = ', rgb_dir)
+            exit(-1)
         if not rgb_dir.exists():
             rgb_dir = scene_dir / 'gray'
         rgb_path = rgb_dir / f'{view_id_str}.png'
@@ -97,6 +101,18 @@ class BOPDataset:
             rgb_path = rgb_path.with_suffix('.jpg')
         if not rgb_path.exists():
             rgb_path = rgb_path.with_suffix('.tif')
+
+        # TODO: additional debugging output
+        # print(f"{'#'*80}")
+        # print('frame_id = ', frame_id)
+        # print('Scene | View = ', scene_id, ' | ', view_id)
+        # print('int(View) = ', view_id)
+        # print('view_id_str = ', view_id_str)
+        # print('scene_id_str = ', scene_id_str)
+        # print('scene_dir = ', scene_dir)
+        # print('rgb_dir = ', rgb_dir)
+        # print('rgb_path = ', rgb_path)
+        # print(f"{'#'*80}")
 
         rgb = np.array(Image.open(rgb_path))
         if rgb.ndim == 2:
